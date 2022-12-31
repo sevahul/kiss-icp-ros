@@ -1,0 +1,10 @@
+<launch>
+        <arg name="config" default="$(find kiss_icp)/config/default.yaml"/>
+        <arg name="points_in_topic" default="/velodyne_points"/>
+        <node pkg="tf" type="static_transform_publisher" name="baselink_tf" args="0 0 0.1852 0 0 0 base_footprint base_link 100" />
+
+        <node pkg="kiss_icp" type="kiss_icp_node.py" name="kiss_icp_node" ns="kiss_icp" output="screen">
+                <param name="config" type="string" value="$(arg config)"/>
+                <remap from="/points_in" to="$(arg points_in_topic)"/>
+        </node>
+</launch>

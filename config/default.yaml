@@ -1,0 +1,27 @@
+out_dir: "results"
+use_cache: True
+
+data:
+  lidar_frequency: 10.0 # only valid if deskew==True
+  preprocess: True
+  max_range: 100.0 # can be also changed in the CLI
+  min_range: 5.0
+
+mapping:
+  # voxel_size: 1.0 # <- optional
+  max_points_per_voxel: 20
+
+adaptive_threshold:
+  initial_threshold: 2.0
+  min_motion_th: 0.1
+
+# Following parameters are added by Seva, wasn't here originally
+deskew: False
+publish_odom_tf: True # if publish a tf to the estimation frame
+
+frames: 
+  global_frame: "odom"          # name of the frame where the robot was first
+  sensor_frame: "velodyne"      # real sensor frame
+  estimation_frame: "base_footprint" # the frame which pose is estimated
+
+

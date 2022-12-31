@@ -1,0 +1,15 @@
+<launch>
+        <arg name="bagfile" default="$(find kiss_icp)/bag/data.bag"/>
+        <arg name="config" default="$(find kiss_icp)/config/default.yaml"/>
+        <arg name="points_in_topic" default="/velodyne_points"/>
+         
+        <node pkg="tf" type="static_transform_publisher" name="velodyne_tf" args="0 0 0.138 0 0 0 base_link velodyne 100" /> 
+
+        <include file="$(find kiss_icp)/launch/run_icp.launch">
+                <arg name="config" value="$(arg config)"/>
+                <arg name="points_in_topic" value="$(arg points_in_topic)"/>
+        </include>
+        
+        <node pkg="rosbag" type="play" name="player" output="log" args="--clock $(arg bagfile)"/>
+        <node type="rviz" name="rviz" pkg="rviz" args="-d $(find kiss_icp)/rviz/icp.rviz" />
+</launch>
