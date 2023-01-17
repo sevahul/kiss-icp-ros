@@ -73,23 +73,21 @@ class KissIcpOdometry:
 
         # define pubs, subs
         self.pub = rospy.Publisher('~estimated_pose', PoseStamped, queue_size=1)
-        self.points_pub = rospy.Publisher( '~velodyne_pcl', PointCloud2, queue_size=1)
+        # self.points_pub = rospy.Publisher( '~velodyne_pcl', PointCloud2, queue_size=1)
         self.points_sub = rospy.Subscriber('/points_in', PointCloud2, self.points_callback, queue_size=10)
         
         self.br = tf.TransformBroadcaster()
 
     def points_callback(self, msg: PointCloud2):
         frame = ros_numpy.point_cloud2.pointcloud2_to_xyz_array(msg)
+        time_in = msg.header.stamp
         timestamps = np.zeros(frame.shape[0])
         start_time = time.perf_counter_ns()
         in_frame, source = self.odometry.register_frame(frame, timestamps)
         self.times.append(time.perf_counter_ns() - start_time)
-        self.publish_pose(self.poses[-1])
-        msg.header.frame_id = self.frame_id_sensor
-        msg.header.stamp = rospy.Time.now()
-        self.points_pub.publish(msg)
+        self.publish_pose(self.poses[-1], time_in)
 
-    def publish_pose(self, pose):
+    def publish_pose(self, pose, stamp):
         # publish sensor pose
         pose = pose@self.T_sensor
         R_array = pose[:3, :3]
@@ -98,7 +96,7 @@ class KissIcpOdometry:
         t = pose[:3, 3]
         p = PoseStamped()
         p.header.frame_id = self.frame_id_global
-        p.header.stamp = rospy.Time.now()
+        p.header.stamp = stamp
         p.pose.position.x = t[0]
         p.pose.position.y = t[1]
         p.pose.position.z = t[2]
@@ -111,7 +109,7 @@ class KissIcpOdometry:
         # publish transformation to sensor estimated position
         self.br.sendTransform((t[0], t[1], t[2]),
                         R_q,
-                        rospy.Time.now(),
+                        stamp,
                         self.frame_id_sensor_estimation,
                         self.frame_id_global)
 
@@ -124,7 +122,7 @@ class KissIcpOdometry:
             t = T_to_base[:3, 3]
             self.br.sendTransform((t[0], t[1], t[2]),
                             R_q,
-                            rospy.Time.now(),
+                            stamp,
                             self.frame_id_estimation,
                             self.frame_id_global)
     
