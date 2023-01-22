@@ -8,7 +8,7 @@ This code uses [kiss-icp](https://github.com/PRBonn/kiss-icp/blob/main/LICENSE) 
 ```
 pip3 install kiss-icp scipy
 ```
-If fail, try to follow the original kiss-icp [README](https://github.com/PRBonn/kiss-icp), install older version of `numpy`, update pip, etc. <br/>
+If fail, try to follow the original kiss-icp [README](https://github.com/PRBonn/kiss-icp), install older version of `numpy`, update `pip`, etc. <br/>
 
 ## Usage:
 To run kiss-icp, run
