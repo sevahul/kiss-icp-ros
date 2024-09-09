@@ -1,3 +1,4 @@
+# This repository is obsolete. Now when kiss-icp is open sourced, please just use the original implementation :)
 # kiss-icp-ros
 ![alt text](https://github.com/sevagul/kiss-icp-ros/blob/main/media/result.png?raw=true)<br/>
 A wrapper around kiss-icp package that includes kiss-icp ros-node. <br/>
